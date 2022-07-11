@@ -14,15 +14,22 @@ namespace SimpleGameServer
 
         }
 
-        public string DataIn(EventParameters socketEventParameters)
+        public string DataIn(EventParameters socketEventParameters,ref bool forAll)
         {
 
             string result = "";
+            forAll = false;
+
             if (Protocol.ConnectionProtocol.TCP == socketEventParameters.GetProtocol)
             {
-                //se conecta y me manda <hello>
-                //le mando <spos> x,y
+               
                 result = TcpMessage(socketEventParameters.GetData);
+                if (result=="")
+                {
+                    result = TcpMessageForAll(socketEventParameters.GetData);
+                    forAll = true;
+                }
+
                 
             }
 
@@ -32,6 +39,11 @@ namespace SimpleGameServer
                 //me manda <mpos> x,y|
                 //todo ok, le mando a todos <ppos>x,y
                 result = UdpMessage(socketEventParameters.GetData);
+                if (result == "")
+                {
+                    result = UdpMessageForAll(socketEventParameters.GetData);
+                    forAll = true;
+                }
                 
             }
             return result;
@@ -41,12 +53,10 @@ namespace SimpleGameServer
         {
             string result = "";
 
-            if (message.Contains("<hello>"))
+            if (message.Contains(GameComunication.DATAIN_CONNECTION_OK))
             {
-                Random r = new Random();
-                int xPos = r.Next(0, 100); //ver bien el tamaño del nivel
-                int yPos = r.Next(0, 100);
-                result = "<spos>" + xPos + "," + yPos; 
+                //hacer que mande el tamaño del nivel
+                result = GameComunication.DATASEND_CREATE_GRID + "|" + ConstantValues.LEVEL_SIZE_X + "|" + ConstantValues.LEVEL_SIZE_Y + "|" + ConstantValues.LEVEL_SIZE_Z + "|" + ConstantValues.LEVEL_COORDS_2D;
             }
             
             return result;
@@ -55,10 +65,20 @@ namespace SimpleGameServer
         private string UdpMessage(string message)
         {
             string result = "";
-            if (message.Contains("<mpos>"))
-            {
-                string[] positions = message.Split('|');
-            }
+
+            return result;
+        }
+
+        private string TcpMessageForAll(string message)
+        {
+            string result = "";
+
+            return result;
+        }
+
+        private string UdpMessageForAll(string message)
+        {
+            string result = "";
 
             return result;
         }

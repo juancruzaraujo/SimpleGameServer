@@ -119,7 +119,6 @@ namespace SimpleGameServer
 
                 case EventParameters.EventType.DATA_IN:
                     DataIn(eventParameters);
-                    //socketsTCP.Send(eventParameters.GetConnectionNumber, "MSG TCP RECIVED OK ");
                     break;
 
                 case EventParameters.EventType.ERROR:
@@ -136,11 +135,25 @@ namespace SimpleGameServer
 
         private static void DataIn(EventParameters eventParameters)
         {
-            //_msg.ShowMessage(message);
-            string answer = _gameServerManager.DataIn(eventParameters);
+            bool answerForAll = false;
+
+            Console.WriteLine(eventParameters.GetData);
+
+            string answer = _gameServerManager.DataIn(eventParameters,ref answerForAll);
+            
+
+            
+
             if (eventParameters.GetProtocol == Protocol.ConnectionProtocol.TCP)
             {
-                _socketsTCP.SendAll(answer);
+                if (answerForAll)
+                {
+                    _socketsTCP.SendAll(answer);
+                }
+                else
+                {
+                    _socketsTCP.Send(eventParameters.GetConnectionNumber,answer);
+                }
             }
             else
             {
