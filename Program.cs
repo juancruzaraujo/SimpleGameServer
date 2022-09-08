@@ -87,7 +87,8 @@ namespace SimpleGameServer
 
                 while (keepRuning)
                 {
-
+                    string commIn = "";
+                    commIn = Console.ReadLine();
                 }
             }
             catch (Exception err)

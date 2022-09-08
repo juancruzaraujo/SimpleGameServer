@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cell.cs" />
     <Compile Include="ConstantValues.cs" />
     <Compile Include="GameComunication.cs" />
     <Compile Include="GameServerManager.cs" />

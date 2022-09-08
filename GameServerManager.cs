@@ -9,9 +9,14 @@ namespace SimpleGameServer
 {
     public class GameServerManager
     {
+
+        Cell[,,] cells;
         public GameServerManager()
         {
+            cells = new Cell[ConstantValues.LEVEL_SIZE_X, ConstantValues.LEVEL_SIZE_Y, ConstantValues.LEVEL_SIZE_Z];
+            return;
 
+        
         }
 
         public string DataIn(EventParameters socketEventParameters,ref bool forAll)
@@ -57,6 +62,15 @@ namespace SimpleGameServer
             {
                 //hacer que mande el tamaño del nivel
                 result = GameComunication.DATASEND_CREATE_GRID + "|" + ConstantValues.LEVEL_SIZE_X + "|" + ConstantValues.LEVEL_SIZE_Y + "|" + ConstantValues.LEVEL_SIZE_Z + "|" + ConstantValues.LEVEL_COORDS_2D;
+            }
+
+
+            if (message.Contains(GameComunication.DATAIN_LEVELCREATED))
+            {
+                //result = GameComunication.DATASEND_CREATE_WALL;
+                //crear obstaculos
+                //Console.WriteLine(message);
+                //59413858
             }
             
             return result;
