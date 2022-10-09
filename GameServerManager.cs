@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ShowAndLogMessage;
 using Sockets;
 
 namespace SimpleGameServer
@@ -10,13 +11,31 @@ namespace SimpleGameServer
     public class GameServerManager
     {
 
-        Cell[,,] cells;
+        
+        MapManager _mapManager;
+        LogInfo _msg;
+        string _jsonMap;
+
         public GameServerManager()
         {
-            cells = new Cell[ConstantValues.LEVEL_SIZE_X, ConstantValues.LEVEL_SIZE_Y, ConstantValues.LEVEL_SIZE_Z];
-            return;
+            _msg = LogInfo.GetInstance();
+            GenerateCompleteMap();
+        }
 
-        
+        public void GenerateCompleteMap()
+        {
+            _mapManager = new MapManager();
+            _mapManager.GenerateMap();
+            _mapManager.GenerateWall();
+            _mapManager.GenerateObstacles();
+
+            BodyMessage msg = new BodyMessage();
+            msg.messageTag = GameComunication.DATASEND_CREATE_GRID;
+            msg.messageBody = JsonConverter.ClassToJson(typeof(MapManager), _mapManager);
+            _jsonMap = JsonConverter.ClassToJson(typeof(BodyMessage), msg);
+
+            _msg.ShowMessage("Mapa creado ", null, LogInfo.typeMsg.OK);
+
         }
 
         public string DataIn(EventParameters socketEventParameters,ref bool forAll)
@@ -60,8 +79,9 @@ namespace SimpleGameServer
 
             if (message.Contains(GameComunication.DATAIN_CONNECTION_OK))
             {
-                //hacer que mande el tamaño del nivel
-                result = GameComunication.DATASEND_CREATE_GRID + "|" + ConstantValues.LEVEL_SIZE_X + "|" + ConstantValues.LEVEL_SIZE_Y + "|" + ConstantValues.LEVEL_SIZE_Z + "|" + ConstantValues.LEVEL_COORDS_2D;
+                
+                //result = GameComunication.DATASEND_CREATE_GRID + "|" + ConstantValues.LEVEL_SIZE_X + "|" + ConstantValues.LEVEL_SIZE_Y + "|" + ConstantValues.LEVEL_SIZE_Z + "|" + ConstantValues.LEVEL_COORDS_2D;
+                result = _jsonMap;
             }
 
 

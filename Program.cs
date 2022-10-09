@@ -49,6 +49,8 @@ namespace SimpleGameServer
                     System.Environment.Exit(0);
                 }
 
+                _msg.ShowMessage("Simple Game Server ", null, LogInfo.typeMsg.NO_TYPE);
+
                 portNumber = int.Parse(args[0]);
                 maxCon = int.Parse(args[1]);
 
@@ -62,12 +64,6 @@ namespace SimpleGameServer
 
                 _socketsTCP.Event_Socket += SocketsTCP_Event_Socket;
                 _socketsUDP.Event_Socket += SocketsUDP_Event_Socket;
-
-                _gameServerManager = new GameServerManager();
-
-
-                _msg.ShowMessage("Simple Game Server ", null, LogInfo.typeMsg.NO_TYPE);
-
 
                 _msg.ShowMessage("tcp port " + portNumber, null, LogInfo.typeMsg.OK);
                 _msg.ShowMessage("udp port " + portNumber, null, LogInfo.typeMsg.OK);
@@ -95,6 +91,11 @@ namespace SimpleGameServer
             {
                 //WriteMessage(err.Message);
                 _msg.ShowMessage(err.Message, null, LogInfo.typeMsg.ERROR);
+                if (debug_Mode)
+                {
+                    string commIn = "";
+                    commIn = Console.ReadLine();
+                }
             }
 
         }
